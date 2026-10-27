@@ -1,0 +1,38 @@
+! Fixes found when reviewing the as-built lab (see README "Review findings")
+
+! --- R4: remove two static routes whose next hop (120.10.10.1) is not on any
+! --- R4 interface. They can never be used; the correct routes via 120.10.10.9 stay.
+enable
+configure terminal
+hostname R4
+no ip route 100.150.50.0 255.255.255.224 120.10.10.1
+no ip route 100.150.50.32 255.255.255.224 120.10.10.1
+end
+copy running-config startup-config
+
+! --- R3: no DHCP clients live on the R3-R5 transit link, so no relay is needed there.
+enable
+configure terminal
+hostname R3
+interface g0/2
+ no ip helper-address 150.30.30.2
+end
+copy running-config startup-config
+
+! --- R5: name it
+enable
+configure terminal
+hostname R5-CORE
+end
+copy running-config startup-config
+
+! --- DHCP server (Server-PT > Services > DHCP), edit each branch pool:
+!     DNS Server -> 150.30.30.2  (the branch pools pointed at .2/.34/.66/.98,
+!     addresses where no DNS server exists)
+!     serverPool: the default pool starts at the network address 150.30.30.0
+!     and overlaps the router (.1) and the server (.2). No clients use it, but
+!     set Start IP to 150.30.30.3 so it can never hand out those addresses.
+
+! --- PCs: Desktop > IP Configuration > select DHCP on every PC.
+!     PC19 and PC28 show 169.254.x.x (APIPA): switch to Static, then back to
+!     DHCP to retry once the routers are up.

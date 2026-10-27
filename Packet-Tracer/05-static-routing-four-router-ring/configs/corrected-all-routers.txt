@@ -1,0 +1,105 @@
+! Corrected configs for the four-router ring (paste in global config mode).
+! Primary static routes take the shortest path; floating static routes
+! (administrative distance 10) take the other way round the ring if a link fails.
+
+! ================= R0 =================
+hostname R0
+no router rip
+interface g0/0
+ description LAN A 200.170.95.0/27
+ ip address 200.170.95.1 255.255.255.224
+ no shutdown
+interface g0/1
+ description Link to R1 G0/0
+ ip address 200.170.95.129 255.255.255.224
+ no shutdown
+interface g0/2
+ description Link to R2 G0/1
+ ip address 200.170.95.225 255.255.255.224
+ no shutdown
+exit
+ip route 200.170.95.32 255.255.255.224 200.170.95.130
+ip route 200.170.95.64 255.255.255.224 200.170.95.130
+ip route 200.170.95.96 255.255.255.224 200.170.95.226
+ip route 200.170.95.160 255.255.255.224 200.170.95.130
+ip route 200.170.95.192 255.255.255.224 200.170.95.226
+ip route 200.170.95.32 255.255.255.224 200.170.95.226 10
+ip route 200.170.95.64 255.255.255.224 200.170.95.226 10
+ip route 200.170.95.96 255.255.255.224 200.170.95.130 10
+
+! ================= R1 =================
+! As built, R1 carried R2's addresses (.97/.226/.194). Remove its old routes first:
+no ip route 200.170.95.0 255.255.255.224 200.170.95.161
+no ip route 200.170.95.32 255.255.255.224 200.170.95.161
+no ip route 200.170.95.128 255.255.255.224 200.170.95.161
+no ip route 200.170.95.0 255.255.255.224 200.170.95.129
+no ip route 200.170.95.64 255.255.255.224 200.170.95.162
+no ip route 200.170.95.96 255.255.255.224 200.170.95.162
+no ip route 200.170.95.192 255.255.255.224 200.170.95.162
+no ip route 200.170.95.224 255.255.255.224 200.170.95.129
+hostname R1
+interface g0/0
+ description Link to R0 G0/1
+ ip address 200.170.95.130 255.255.255.224
+ no shutdown
+interface g0/1
+ description Link to R3 G0/1
+ ip address 200.170.95.161 255.255.255.224
+ no shutdown
+interface g0/2
+ description LAN B 200.170.95.32/27
+ ip address 200.170.95.33 255.255.255.224
+ no shutdown
+exit
+ip route 200.170.95.0 255.255.255.224 200.170.95.129
+ip route 200.170.95.64 255.255.255.224 200.170.95.162
+ip route 200.170.95.96 255.255.255.224 200.170.95.129
+ip route 200.170.95.192 255.255.255.224 200.170.95.162
+ip route 200.170.95.224 255.255.255.224 200.170.95.129
+ip route 200.170.95.0 255.255.255.224 200.170.95.162 10
+ip route 200.170.95.64 255.255.255.224 200.170.95.129 10
+ip route 200.170.95.96 255.255.255.224 200.170.95.162 10
+
+! ================= R2 =================
+! Addresses and primary routes were already correct (LAN B via R3 is as short
+! as via R0); only names and floating backups are added.
+hostname R2
+interface g0/0
+ description LAN D 200.170.95.96/27
+interface g0/1
+ description Link to R0 G0/2
+interface g0/2
+ description Link to R3 G0/2
+exit
+ip route 200.170.95.0 255.255.255.224 200.170.95.225
+ip route 200.170.95.32 255.255.255.224 200.170.95.193
+ip route 200.170.95.64 255.255.255.224 200.170.95.193
+ip route 200.170.95.128 255.255.255.224 200.170.95.225
+ip route 200.170.95.160 255.255.255.224 200.170.95.193
+ip route 200.170.95.0 255.255.255.224 200.170.95.193 10
+ip route 200.170.95.32 255.255.255.224 200.170.95.225 10
+ip route 200.170.95.64 255.255.255.224 200.170.95.225 10
+
+! ================= R3 =================
+hostname R3
+interface g0/0
+ description LAN C 200.170.95.64/27
+interface g0/1
+ description Link to R1 G0/1
+interface g0/2
+ description Link to R2 G0/2
+exit
+ip route 200.170.95.0 255.255.255.224 200.170.95.161
+ip route 200.170.95.32 255.255.255.224 200.170.95.161
+ip route 200.170.95.96 255.255.255.224 200.170.95.194
+ip route 200.170.95.128 255.255.255.224 200.170.95.161
+ip route 200.170.95.224 255.255.255.224 200.170.95.194
+ip route 200.170.95.0 255.255.255.224 200.170.95.194 10
+ip route 200.170.95.32 255.255.255.224 200.170.95.194 10
+ip route 200.170.95.96 255.255.255.224 200.170.95.161 10
+
+! ================= Switch management (SVI) fixes =================
+! Switch0 (LAN A) had LAN B's address and Switch1 (LAN B) had LAN A's: swap them.
+! Switch0:  interface vlan 1 / ip address 200.170.95.5 255.255.255.224 / no shutdown / ip default-gateway 200.170.95.1
+! Switch1:  interface vlan 1 / ip address 200.170.95.37 255.255.255.224 / no shutdown / ip default-gateway 200.170.95.33
+! Switch3:  interface vlan 1 / ip address 200.170.95.101 255.255.255.224 / no shutdown / ip default-gateway 200.170.95.97

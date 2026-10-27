@@ -1,0 +1,38 @@
+! Fixes for the VLAN lab
+
+! --- Router1: VLAN 20 and VLAN 30 gateways were typed as 192.160.10.x instead of 192.168.10.x
+enable
+configure terminal
+hostname R1
+interface g0/1
+ no shutdown
+interface g0/1.20
+ description VLAN 20 HR gateway
+ ip address 192.168.10.65 255.255.255.192
+interface g0/1.30
+ description VLAN 30 IT gateway
+ ip address 192.168.10.129 255.255.255.192
+interface g0/1.10
+ description VLAN 10 Sales gateway
+interface g0/1.40
+ description VLAN 40 Accounting gateway
+end
+copy running-config startup-config
+
+! --- PC6 (Switch0 Fa0/12 = VLAN 30 IT) had 192.168.10.45, an address in VLAN 10's subnet.
+!     Desktop > IP Configuration: 192.168.10.136 / 255.255.255.192 / gateway 192.168.10.129
+
+! --- All three switches: name them and limit the trunks to the VLANs in use
+! Switch0:
+!   hostname SW0
+!   interface g0/1
+!    switchport trunk allowed vlan 10,20,30,40
+! Switch1:
+!   hostname SW1
+!   interface range g0/1 - 2
+!    switchport trunk allowed vlan 10,20,30,40
+! Switch2:
+!   hostname SW2
+!   interface range g0/1 - 2
+!    switchport trunk allowed vlan 10,20,30,40
+! Unused ports Fa0/21-24 and G0/2 on SW0: put in an unused VLAN and shut down.

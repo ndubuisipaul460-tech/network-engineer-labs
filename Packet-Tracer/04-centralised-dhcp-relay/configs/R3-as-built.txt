@@ -1,0 +1,25 @@
+! Router3 - running config exactly as saved in the .pkt (boilerplate lines removed)
+version 15.1
+no service password-encryption
+hostname Router
+interface GigabitEthernet0/0
+ ip address 100.150.50.1 255.255.255.224
+ ip helper-address 150.30.30.2
+interface GigabitEthernet0/1
+ ip address 100.150.50.33 255.255.255.224
+ ip helper-address 150.30.30.2
+interface GigabitEthernet0/2
+ ip address 120.10.10.1 255.255.255.252
+ ip helper-address 150.30.30.2
+interface Vlan1
+ no ip address
+ shutdown
+ip classless
+ip route 100.150.50.64 255.255.255.224 120.10.10.2
+ip route 100.150.50.96 255.255.255.224 120.10.10.2
+ip route 150.30.30.0 255.255.255.248 120.10.10.2
+line con 0
+line aux 0
+line vty 0 4
+ login
+end

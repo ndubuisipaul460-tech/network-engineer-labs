@@ -9,7 +9,10 @@ network-engineer-labs/
 ├── Packet-Tracer/          # build-it-yourself labs with configs and break/fix tickets
 │   ├── 01-vlans-intervlan-dhcp/
 │   ├── 02-ospf-three-sites/
-│   └── 03-site-to-site-ipsec-vpn/
+│   ├── 03-site-to-site-ipsec-vpn/
+│   ├── 04-centralised-dhcp-relay/            (.pkt included)
+│   ├── 05-static-routing-four-router-ring/   (.pkt included)
+│   └── 06-vlans-three-switches-router-on-a-stick/  (.pkt included)
 ├── Networking/             # TCP/IP, VLAN/STP, OSPF, DHCP/DNS, IPsec notes
 ├── PaloAlto/               # CLI cheat sheet and troubleshooting method
 └── Interview-Notes/        # networking interview Q&A
@@ -22,6 +25,11 @@ network-engineer-labs/
 | 1 | [VLANs, inter-VLAN routing and DHCP](Packet-Tracer/01-vlans-intervlan-dhcp/) | 802.1Q trunks, router-on-a-stick, DHCP pools, unused-port hardening | APIPA addresses, pruned trunk, wrong access VLAN, native VLAN mismatch |
 | 2 | [OSPF across three sites](Packet-Tracer/02-ospf-three-sites/) | Single-area OSPF, router IDs, passive interfaces, failover | Missing network statements, timer mismatch, link failure reroute, wrong mask |
 | 3 | [Site-to-site IPsec VPN](Packet-Tracer/03-site-to-site-ipsec-vpn/) | IKE phase 1/2, crypto maps, interesting traffic | Key mismatch, transform-set mismatch, non-mirrored ACLs, underlay down |
+| 4 | [Centralised DHCP with relay](Packet-Tracer/04-centralised-dhcp-relay/) ⭐ | One DHCP server for 4 branches, `ip helper-address`, giaddr, /27 and /30 subnetting, static routes | Relay missing, no return route, pool exhausted |
+| 5 | [Static routing, four-router ring](Packet-Tracer/05-static-routing-four-router-ring/) ⭐ | /24 split into eight /27s, static and floating static routes, failover | Link failure reroute, duplicate IP, missing return path |
+| 6 | [VLANs across three switches](Packet-Tracer/06-vlans-three-switches-router-on-a-stick/) ⭐ | 4 named VLANs, chained 802.1Q trunks, router-on-a-stick, /26 subnetting | Gateway typo, pruned trunk, wrong access port |
+
+⭐ **My own builds**: the `.pkt` file is included, together with a review of the as-built configuration (the faults I found and the corrected configs).
 
 Each lab follows the same layout: **Goal → Topology → Addressing → Build → Verify → Break and fix → My notes**.
 

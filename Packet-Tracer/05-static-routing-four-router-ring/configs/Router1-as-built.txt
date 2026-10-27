@@ -1,0 +1,19 @@
+! Router1 - running config as saved in the .pkt (boilerplate removed)
+hostname Router
+interface GigabitEthernet0/0
+ ip address 200.170.95.97 255.255.255.224
+interface GigabitEthernet0/1
+ ip address 200.170.95.226 255.255.255.224
+interface GigabitEthernet0/2
+ ip address 200.170.95.194 255.255.255.224
+interface Vlan1
+ no ip address
+ shutdown
+ip route 200.170.95.0 255.255.255.224 200.170.95.161
+ip route 200.170.95.32 255.255.255.224 200.170.95.161
+ip route 200.170.95.128 255.255.255.224 200.170.95.161
+ip route 200.170.95.0 255.255.255.224 200.170.95.129
+ip route 200.170.95.64 255.255.255.224 200.170.95.162
+ip route 200.170.95.96 255.255.255.224 200.170.95.162
+ip route 200.170.95.192 255.255.255.224 200.170.95.162
+ip route 200.170.95.224 255.255.255.224 200.170.95.129
