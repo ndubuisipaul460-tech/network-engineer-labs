@@ -14,7 +14,7 @@ network-engineer-labs/
 │   ├── 05-static-routing-four-router-ring/   (.pkt included)
 │   └── 06-vlans-three-switches-router-on-a-stick/  (.pkt included)
 ├── Networking/             # TCP/IP, VLAN/STP, OSPF, DHCP/DNS, IPsec notes
-├── PaloAlto/               # CLI cheat sheet and troubleshooting method
+├── CiscoASA/              # ASA CLI cheat sheet and troubleshooting method
 └── Interview-Notes/        # networking interview Q&A
 ```
 
@@ -49,7 +49,7 @@ The same order I use on every ticket:
 | Switching | VLANs, 802.1Q trunks, native VLAN, STP, port hardening |
 | Routing | Static routing, OSPF, RIP to dynamic migration, default routes |
 | Services | DHCP, DNS, NAT |
-| Security | Site-to-site IPsec VPN, ACLs, Palo Alto NGFW policies |
+| Security | Site-to-site IPsec VPN, ACLs, Cisco ASA firewalls (ACLs, NAT, packet-tracer) |
 | Troubleshooting | Structured fault isolation, `show` command analysis, Wireshark |
 
 ## Environment
