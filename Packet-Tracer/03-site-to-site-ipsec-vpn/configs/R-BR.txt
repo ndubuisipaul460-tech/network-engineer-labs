@@ -1,0 +1,40 @@
+! R-BR - branch edge router (Cisco 2911, securityk9 licence enabled)
+enable
+configure terminal
+hostname R-BR
+no ip domain-lookup
+!
+interface g0/0
+ description Branch LAN
+ ip address 192.168.3.1 255.255.255.0
+ no shutdown
+interface g0/1
+ description Uplink to ISP
+ ip address 10.2.2.1 255.255.255.252
+ no shutdown
+exit
+ip route 0.0.0.0 0.0.0.0 10.2.2.2
+!
+! Interesting traffic: mirror image of R-HQ's ACL
+access-list 110 permit ip 192.168.3.0 0.0.0.255 192.168.1.0 0.0.0.255
+!
+crypto isakmp policy 10
+ encryption aes 256
+ hash sha
+ authentication pre-share
+ group 5
+ lifetime 86400
+exit
+crypto isakmp key vpnLab01 address 10.1.1.1
+!
+crypto ipsec transform-set VPN-SET esp-aes esp-sha-hmac
+crypto map VPN-MAP 10 ipsec-isakmp
+ description Tunnel to HQ
+ set peer 10.1.1.1
+ set transform-set VPN-SET
+ match address 110
+exit
+interface g0/1
+ crypto map VPN-MAP
+end
+copy running-config startup-config

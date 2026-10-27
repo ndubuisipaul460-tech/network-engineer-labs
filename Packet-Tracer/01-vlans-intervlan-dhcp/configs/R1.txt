@@ -1,0 +1,50 @@
+! R1 - Cisco 2911, router-on-a-stick and DHCP
+enable
+configure terminal
+hostname R1
+no ip domain-lookup
+enable secret class123
+service password-encryption
+!
+interface g0/0
+ description Trunk to S1 G0/1
+ no ip address
+ no shutdown
+exit
+interface g0/0.10
+ description VLAN 10 USERS gateway
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+exit
+interface g0/0.20
+ description VLAN 20 SERVERS gateway
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+exit
+interface g0/0.99
+ description VLAN 99 MGMT gateway (native)
+ encapsulation dot1Q 99 native
+ ip address 192.168.99.1 255.255.255.0
+exit
+!
+ip dhcp excluded-address 192.168.10.1 192.168.10.99
+ip dhcp excluded-address 192.168.10.200 192.168.10.254
+ip dhcp pool USERS
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ dns-server 192.168.20.10
+exit
+!
+line console 0
+ password cisco123
+ login
+line vty 0 4
+ password cisco123
+ login
+end
+copy running-config startup-config
+!
+! SRV1 (set in the Desktop > IP Configuration tab):
+!   IP 192.168.20.10  Mask 255.255.255.0  Gateway 192.168.20.1  DNS 192.168.20.10
+!   Services > DNS: add an A record  srv1.lab.local -> 192.168.20.10
+!   Test from PC-U1:  ping srv1.lab.local

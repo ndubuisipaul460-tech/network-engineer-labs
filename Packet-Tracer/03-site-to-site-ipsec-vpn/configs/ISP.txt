@@ -1,0 +1,17 @@
+! ISP - simulated internet router. It has NO routes to 192.168.x.x,
+! so the two LANs can only reach each other through the IPsec tunnel.
+enable
+configure terminal
+hostname ISP
+no ip domain-lookup
+!
+interface g0/0
+ description To R-HQ
+ ip address 10.1.1.2 255.255.255.252
+ no shutdown
+interface g0/1
+ description To R-BR
+ ip address 10.2.2.2 255.255.255.252
+ no shutdown
+end
+copy running-config startup-config
